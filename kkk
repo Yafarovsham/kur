@@ -1,0 +1,123 @@
+#include<fstream>
+#include<iostream>
+#include<iomanip>
+#include<cmath>
+using namespace std;
+
+ void PrintMatr(double **mas, int m) 
+ {
+ int i, j;
+ cout << "Matrica:"<< endl;
+ for (i = 0; i<m; i++) 
+	{
+		for (j = 0; j<m; j++)
+		cout << setw(5) << mas[i][j] << setw(20) << right;
+		cout << endl;
+	}
+}
+void PrintMas(double *X, int m) 
+ {
+	 cout<<"Vector: "<<endl;
+	for(int i=0;i<m;i++)
+	cout<<X[i]<<endl;
+}
+
+/*
+float scalyar(float **a,float **b,int col1,int col2,int n)
+{
+    float q=0;
+    for(int i=0;i<n;i++)
+        q=q+(a[i][col1]*b[i][col2]);
+    return q;
+}
+
+void ort(float **a,float **r,float **t,int n)
+{
+    float s1=0;
+    float s2=0;
+    int c=1;
+    for(int i=0;i<n;i++)
+    {
+        for(int j=c;j<n;j++)
+        {
+            s1=scalyar(a,r,j,i,n);
+            s2=scalyar(r,r,i,i,n);
+            t[i][j]=s1/s2;
+        }
+        c=c+1;
+    }
+}
+
+*/
+
+
+double foo(double x, double y)
+{
+	return x*x;
+}
+
+
+
+
+double kuttStep (double x, double y, double h)
+{
+    double K1 = h*foo (x, y);
+    double K2 = h*foo (x + h / 2.0, y + K1 / 2.0);
+    double K3 = h*foo (x + h / 2.0, y + K2 / 2.0);
+    double K4 = h*foo (x + h, y + K3);
+    return y +  (K1 + 2.0 * K2 + 2.0 * K3 + K4) / 6.0;
+}
+
+
+int main()
+{
+    ifstream in("input.txt");
+	int n, i, j;
+	in >> n;											
+	double **a=new double *[n], *X=new double[n];
+		
+		for(i=0; i<n; i++)
+			a[i]=new double [n];
+		for(i=0; i<n; i++, cout<<endl)					
+			for(j=0; j<n; j++)
+			{
+				in >> a[i][j];
+			}
+    double x0 = 0.0;
+    double y0 = 0.0; 
+    double xn = 1.0;
+    double h;
+    
+    cout << "h= ";
+    cin >> h;
+    int N = ceil((xn-x0)/h) + 2;
+    
+    double** arr = new double* [N];
+    for (int i = 0; i < N; ++i){
+        arr[i] = new double [2];
+    }
+ 
+    double x = x0;
+    double y = y0;
+    double y_ = 0.0;
+    arr[0][0] = x;
+    arr[0][1] = y;
+    
+    for (int i = 1; i < N; ++i){
+        x += h;
+        y = kuttStep (x, y, h);
+        arr[i][0] = x;
+        arr[i][1] = y;
+    }
+    
+ 
+	in.close();
+	cout << endl;
+	PrintMatr(a,n);
+	cout << "Kutt:" << endl;
+    for(int i = 0; i < N; ++i){
+        cout << fixed << setprecision(4) << arr[i][0] << "\t" << fixed << setprecision(4) << arr[i][1] << endl;
+    }
+	return 0;
+}
+
